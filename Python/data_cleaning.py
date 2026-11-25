@@ -44,3 +44,49 @@ print(attendance_df.isnull().sum())
 print("\n--- DUPLICATE ROWS ---")
 print("Marks duplicates:", marks_df.duplicated().sum())
 print("Attendance duplicates:", attendance_df.duplicated().sum())
+# ==============================
+# DATA CLEANING AND MERGING
+# ==============================
+
+# Check duplicate Student IDs
+print("\n--- DUPLICATE STUDENT IDs ---")
+print("Marks IDs:", marks_df["Student_ID"].duplicated().sum())
+print("Attendance IDs:", attendance_df["Student_ID"].duplicated().sum())
+
+
+# Merge both datasets using Student_ID
+merged_df = pd.merge(
+    marks_df,
+    attendance_df,
+    on="Student_ID",
+    how="inner",
+    suffixes=("_Marks", "_Attendance")
+)
+
+print("\n--- MERGED DATA ---")
+print(merged_df.head())
+
+
+# Calculate total marks
+subjects = ["Maths", "Physics", "Chemistry", "English", "Computer"]
+
+merged_df["Total_Marks"] = merged_df[subjects].sum(axis=1)
+
+
+# Calculate average marks
+merged_df["Average_Marks"] = merged_df[subjects].mean(axis=1)
+
+
+# Calculate attendance percentage
+merged_df["Attendance_Percentage"] = (
+    merged_df["Classes_Attended"] / merged_df["Total_Classes"]
+) * 100
+
+
+# Display final dataset
+print("\n--- FINAL DATASET ---")
+print(merged_df.head())
+
+
+# Display dataset dimensions
+print("\nFinal dataset shape:", merged_df.shape)
